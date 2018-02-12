@@ -35,11 +35,11 @@
             <ImageView
                 android:id="@+id/sale"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:focusable="false"
                 android:layout_gravity="bottom"
-                android:src="@drawable/ic_local_grocery_store_24dp"
+                android:src="@drawable/sale_img"
                 android:focusableInTouchMode="false"
                 android:text="@string/sale_button" />
 

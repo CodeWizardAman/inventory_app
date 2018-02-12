@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_dummy_data:
-                // add dummy data for testing
+                // add dummy data
                 addDummyData();
                 adapter.swapCursor(dbHelper.readInventory());
         }
@@ -96,16 +96,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Add data for demo purposes
-     *
-     * tring productName, int productQuantity, String productPrice, String supplierName,
-     String supplierEmail, String supplierPhone, String image
+     * Add dummy data
      */
     private void addDummyData() {
         InventoryProduct chocolateCake = new InventoryProduct(
                 "Chocolate Cake",
                 12,
-                "Rs 200",
+                "Rs 400",
                 "Hari Sweets",
                 "harisweets24@meetha.com",
                 "020-23458798",
@@ -113,14 +110,54 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.insertProduct(chocolateCake);
 
         InventoryProduct pineappleCake = new InventoryProduct(
-                "Chocolate Cake",
-                12,
-                "Rs 200",
+                "Pineapple Cake",
+                24,
+                "Rs 180",
                 "Hari Sweets",
                 "harisweets24@meetha.com",
                 "020-23458798",
-                "android.resource://com.example.android.inventoryproductsapp/drawable/chocolate_cake");
-        dbHelper.insertProduct(chocolateCake);
+                "android.resource://com.example.android.inventoryproductsapp/drawable/pineapple_cake");
+        dbHelper.insertProduct(pineappleCake);
+
+        InventoryProduct strawberryCake = new InventoryProduct(
+                "Strawberry Cake",
+                15,
+                "Rs 300",
+                "Pradeep Sweets",
+                "pradeepsweets24@meetha.com",
+                "020-23432798",
+                "android.resource://com.example.android.inventoryproductsapp/drawable/strawberry_cake");
+        dbHelper.insertProduct(strawberryCake);
+
+        InventoryProduct vanillaCake = new InventoryProduct(
+                "Vanilla Cake",
+                18,
+                "Rs 150",
+                "Jabbar Confectionary",
+                "jbroneclick@meetha.com",
+                "020-22458798",
+                "android.resource://com.example.android.inventoryproductsapp/drawable/vanilla_cake");
+        dbHelper.insertProduct(vanillaCake);
+
+        InventoryProduct blackForestCake = new InventoryProduct(
+                "Black Forest Cake",
+                19,
+                "Rs 500",
+                "Punekar Sweets",
+                "punekarsweets@meetha.com",
+                "020-23346798",
+                "android.resource://com.example.android.inventoryproductsapp/drawable/blackforest_cake");
+        dbHelper.insertProduct(blackForestCake);
+
+        InventoryProduct fruitCake = new InventoryProduct(
+                "Fruit Cake",
+                24,
+                "Rs 100",
+                "Thaggu Da Halwai",
+                "thaggudahalwai@meetha.com",
+                "020-23345798",
+                "android.resource://com.example.android.inventoryproductsapp/drawable/fruit_cake");
+        dbHelper.insertProduct(fruitCake);
 
     }
 
