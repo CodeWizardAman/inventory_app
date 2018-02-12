@@ -13,8 +13,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,20 +28,20 @@ import android.widget.ImageView;
  * Created by UFO_24 on 12-02-2018.
  */
 
-public class DetailsActivity extends AppCompatActivity{
+public class DetailsActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = DetailsActivity.class.getCanonicalName();
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
     private InventoryProductDbHelper dbHelper;
-    EditText nameEdit;
-    EditText priceEdit;
-    EditText quantityEdit;
-    EditText supplierNameEdit;
-    EditText supplierPhoneEdit;
-    EditText supplierEmailEdit;
+    EditText nameEditText;
+    EditText priceEditText;
+    EditText quantityEditText;
+    EditText supplierNameEditText;
+    EditText supplierPhoneEditText;
+    EditText supplierEmailEditText;
     long currentItemId;
-    ImageButton decreaseQuantity;
-    ImageButton increaseQuantity;
+    ImageButton decreaseQuantityBtn;
+    ImageButton increaseQuantityBtn;
     Button imageBtn;
     ImageView imageView;
     Uri actualUri;
@@ -56,16 +56,7 @@ public class DetailsActivity extends AppCompatActivity{
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        nameEdit = (EditText) findViewById(R.id.product_name_edit_text);
-        priceEdit = (EditText) findViewById(R.id.price_edit_text);
-        quantityEdit = (EditText) findViewById(R.id.quantity_edit_text);
-        supplierNameEdit = (EditText) findViewById(R.id.supplier_name_edit_text);
-        supplierPhoneEdit = (EditText) findViewById(R.id.supplier_name_edit_text);
-        supplierEmailEdit = (EditText) findViewById(R.id.supplier_email_edit_text);
-        decreaseQuantity = (ImageButton) findViewById(R.id.decrease_quantity_btn);
-        increaseQuantity = (ImageButton) findViewById(R.id.increase_quantity_btn);
-        imageBtn = (Button) findViewById(R.id.select_image);
-        imageView = (ImageView) findViewById(R.id.image_view);
+        initViews();
 
         dbHelper = new InventoryProductDbHelper(this);
         currentItemId = getIntent().getLongExtra("itemId", 0);
@@ -77,29 +68,22 @@ public class DetailsActivity extends AppCompatActivity{
             addValuesToEditItem(currentItemId);
         }
 
-        decreaseQuantity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                subtractOneToQuantity();
-                infoItemHasChanged = true;
-            }
-        });
+        handleClickEvents();
 
-        increaseQuantity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sumOneToQuantity();
-                infoItemHasChanged = true;
-            }
-        });
+    }
 
-        imageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tryToOpenImageSelector();
-                infoItemHasChanged = true;
-            }
-        });
+    private void initViews() {
+        nameEditText = (EditText) findViewById(R.id.product_name_edit_text);
+        priceEditText = (EditText) findViewById(R.id.price_edit_text);
+        quantityEditText = (EditText) findViewById(R.id.quantity_edit_text);
+        supplierNameEditText = (EditText) findViewById(R.id.supplier_name_edit_text);
+        supplierPhoneEditText = (EditText) findViewById(R.id.supplier_name_edit_text);
+        supplierEmailEditText = (EditText) findViewById(R.id.supplier_email_edit_text);
+        decreaseQuantityBtn = (ImageButton) findViewById(R.id.decrease_quantity_btn);
+        increaseQuantityBtn = (ImageButton) findViewById(R.id.increase_quantity_btn);
+        imageBtn = (Button) findViewById(R.id.select_image);
+        imageView = (ImageView) findViewById(R.id.image_view);
+
     }
 
     @Override
@@ -136,8 +120,35 @@ public class DetailsActivity extends AppCompatActivity{
         alertDialog.show();
     }
 
+    private void handleClickEvents() {
+
+        decreaseQuantityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                subtractOneToQuantity();
+                infoItemHasChanged = true;
+            }
+        });
+
+        increaseQuantityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sumOneToQuantity();
+                infoItemHasChanged = true;
+            }
+        });
+
+        imageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tryOpeningImageSelector();
+                infoItemHasChanged = true;
+            }
+        });
+    }
+
     private void subtractOneToQuantity() {
-        String previousValueString = quantityEdit.getText().toString();
+        String previousValueString = quantityEditText.getText().toString();
         int previousValue;
         if (previousValueString.isEmpty()) {
             return;
@@ -145,19 +156,19 @@ public class DetailsActivity extends AppCompatActivity{
             return;
         } else {
             previousValue = Integer.parseInt(previousValueString);
-            quantityEdit.setText(String.valueOf(previousValue - 1));
+            quantityEditText.setText(String.valueOf(previousValue - 1));
         }
     }
 
     private void sumOneToQuantity() {
-        String previousValueString = quantityEdit.getText().toString();
+        String previousValueString = quantityEditText.getText().toString();
         int previousValue;
         if (previousValueString.isEmpty()) {
             previousValue = 0;
         } else {
             previousValue = Integer.parseInt(previousValueString);
         }
-        quantityEdit.setText(String.valueOf(previousValue + 1));
+        quantityEditText.setText(String.valueOf(previousValue + 1));
     }
 
     @Override
@@ -170,11 +181,11 @@ public class DetailsActivity extends AppCompatActivity{
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         if (currentItemId == 0) {
-            MenuItem deleteOneItemMenuItem = menu.findItem(R.id.action_delete_item);
-            MenuItem deleteAllMenuItem = menu.findItem(R.id.action_delete_all_data);
+            MenuItem deleteProductMenuItem = menu.findItem(R.id.action_delete_item);
+            MenuItem deleteAllProductMenuItem = menu.findItem(R.id.action_delete_all_data);
             MenuItem orderMenuItem = menu.findItem(R.id.action_order);
-            deleteOneItemMenuItem.setVisible(false);
-            deleteAllMenuItem.setVisible(false);
+            deleteProductMenuItem.setVisible(false);
+            deleteAllProductMenuItem.setVisible(false);
             orderMenuItem.setVisible(false);
         }
         return true;
@@ -225,22 +236,22 @@ public class DetailsActivity extends AppCompatActivity{
 
     private boolean addItemToDb() {
         boolean isAllOk = true;
-        if (!checkIfValueSet(nameEdit, "name")) {
+        if (!checkIfValueSet(nameEditText, "name")) {
             isAllOk = false;
         }
-        if (!checkIfValueSet(priceEdit, "price")) {
+        if (!checkIfValueSet(priceEditText, "price")) {
             isAllOk = false;
         }
-        if (!checkIfValueSet(quantityEdit, "quantity")) {
+        if (!checkIfValueSet(quantityEditText, "quantity")) {
             isAllOk = false;
         }
-        if (!checkIfValueSet(supplierNameEdit, "supplier name")) {
+        if (!checkIfValueSet(supplierNameEditText, "supplier name")) {
             isAllOk = false;
         }
-        if (!checkIfValueSet(supplierPhoneEdit, "supplier phone")) {
+        if (!checkIfValueSet(supplierPhoneEditText, "supplier phone")) {
             isAllOk = false;
         }
-        if (!checkIfValueSet(supplierEmailEdit, "supplier email")) {
+        if (!checkIfValueSet(supplierEmailEditText, "supplier email")) {
             isAllOk = false;
         }
         if (actualUri == null && currentItemId == 0) {
@@ -253,16 +264,16 @@ public class DetailsActivity extends AppCompatActivity{
 
         if (currentItemId == 0) {
             InventoryProduct item = new InventoryProduct(
-                    nameEdit.getText().toString().trim(),
-                    Integer.parseInt(quantityEdit.getText().toString().trim()),
-                    priceEdit.getText().toString().trim(),
-                    supplierNameEdit.getText().toString().trim(),
-                    supplierEmailEdit.getText().toString().trim(),
-                    supplierPhoneEdit.getText().toString().trim(),
+                    nameEditText.getText().toString().trim(),
+                    Integer.parseInt(quantityEditText.getText().toString().trim()),
+                    priceEditText.getText().toString().trim(),
+                    supplierNameEditText.getText().toString().trim(),
+                    supplierEmailEditText.getText().toString().trim(),
+                    supplierPhoneEditText.getText().toString().trim(),
                     actualUri.toString());
             dbHelper.insertProduct(item);
         } else {
-            int quantity = Integer.parseInt(quantityEdit.getText().toString().trim());
+            int quantity = Integer.parseInt(quantityEditText.getText().toString().trim());
             dbHelper.updateProduct(currentItemId, quantity);
         }
         return true;
@@ -281,18 +292,18 @@ public class DetailsActivity extends AppCompatActivity{
     private void addValuesToEditItem(long itemId) {
         Cursor cursor = dbHelper.readProduct(itemId);
         cursor.moveToFirst();
-        nameEdit.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_NAME)));
-        priceEdit.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_PRICE)));
-        quantityEdit.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_QUANTITY)));
-        supplierNameEdit.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_SUPPLIER_NAME)));
-        supplierPhoneEdit.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_SUPPLIER_PHONE)));
-        supplierEmailEdit.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_SUPPLIER_EMAIL)));
+        nameEditText.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_NAME)));
+        priceEditText.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_PRICE)));
+        quantityEditText.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_QUANTITY)));
+        supplierNameEditText.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_SUPPLIER_NAME)));
+        supplierPhoneEditText.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_SUPPLIER_PHONE)));
+        supplierEmailEditText.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_SUPPLIER_EMAIL)));
         imageView.setImageURI(Uri.parse(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_IMAGE))));
-        nameEdit.setEnabled(false);
-        priceEdit.setEnabled(false);
-        supplierNameEdit.setEnabled(false);
-        supplierPhoneEdit.setEnabled(false);
-        supplierEmailEdit.setEnabled(false);
+        nameEditText.setEnabled(false);
+        priceEditText.setEnabled(false);
+        supplierNameEditText.setEnabled(false);
+        supplierPhoneEditText.setEnabled(false);
+        supplierEmailEditText.setEnabled(false);
         imageBtn.setEnabled(false);
     }
 
@@ -303,7 +314,7 @@ public class DetailsActivity extends AppCompatActivity{
             public void onClick(DialogInterface dialog, int id) {
                 // intent to phone
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + supplierPhoneEdit.getText().toString().trim()));
+                intent.setData(Uri.parse("tel:" + supplierPhoneEditText.getText().toString().trim()));
                 startActivity(intent);
             }
         });
@@ -312,11 +323,11 @@ public class DetailsActivity extends AppCompatActivity{
                 // intent to email
                 Intent intent = new Intent(android.content.Intent.ACTION_SENDTO);
                 intent.setType("text/plain");
-                intent.setData(Uri.parse("mailto:" + supplierEmailEdit.getText().toString().trim()));
+                intent.setData(Uri.parse("mailto:" + supplierEmailEditText.getText().toString().trim()));
                 intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Recurrent new order");
-                String bodyMessage = "Please send us as soon as possible more " +
-                        nameEdit.getText().toString().trim() +
-                        "!!!";
+                String bodyMessage = "Please send us following product: Product Name - " +
+                        nameEditText.getText().toString().trim() +
+                        " And Product Quantiy - "+ quantityEditText.getText().toString().trim();
                 intent.putExtra(android.content.Intent.EXTRA_TEXT, bodyMessage);
                 startActivity(intent);
             }
@@ -325,15 +336,15 @@ public class DetailsActivity extends AppCompatActivity{
         alertDialog.show();
     }
 
-    private int deleteAllRowsFromTable() {
+    private int deleteAllProductsFromTable() {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         return database.delete(InventoryProductContract.InventoryEntry.TABLE_NAME, null, null);
     }
 
-    private int deleteOneItemFromTable(long itemId) {
+    private int deleteProductFromTable(long itemId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String selection = InventoryProductContract.InventoryEntry._ID + "=?";
-        String[] selectionArgs = { String.valueOf(itemId) };
+        String[] selectionArgs = {String.valueOf(itemId)};
         int rowsDeleted = database.delete(
                 InventoryProductContract.InventoryEntry.TABLE_NAME, selection, selectionArgs);
         return rowsDeleted;
@@ -345,9 +356,9 @@ public class DetailsActivity extends AppCompatActivity{
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if (itemId == 0) {
-                    deleteAllRowsFromTable();
+                    deleteAllProductsFromTable();
                 } else {
-                    deleteOneItemFromTable(itemId);
+                    deleteProductFromTable(itemId);
                 }
                 finish();
             }
@@ -363,13 +374,13 @@ public class DetailsActivity extends AppCompatActivity{
         alertDialog.show();
     }
 
-    public void tryToOpenImageSelector() {
+    public void tryOpeningImageSelector() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
             return;
         }
         openImageSelector();
@@ -391,7 +402,7 @@ public class DetailsActivity extends AppCompatActivity{
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+            case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

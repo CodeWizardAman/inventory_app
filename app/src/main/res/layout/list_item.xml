@@ -53,7 +53,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textSize="16sp"
                 android:gravity="bottom"
-                tools:text="100yen" />
+                tools:text="100Rs" />
 
             <TextView
                 android:id="@+id/quantity"
