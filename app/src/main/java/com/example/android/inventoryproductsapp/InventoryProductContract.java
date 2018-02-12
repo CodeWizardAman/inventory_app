@@ -2,10 +2,6 @@ package com.example.android.inventoryproductsapp;
 
 import android.provider.BaseColumns;
 
-/**
- * Created by UFO_24 on 12-02-2018.
- */
-
 public class InventoryProductContract {
 
     public InventoryProductContract() {

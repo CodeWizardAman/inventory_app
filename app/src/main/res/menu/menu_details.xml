@@ -8,15 +8,15 @@
          />
 
     <item
-        android:id="@+id/action_order"
+        android:id="@+id/action_order_products"
         android:title="@string/menu_order_item"/>
 
     <item
-        android:id="@+id/action_delete_item"
+        android:id="@+id/action_delete_product"
         android:title="@string/menu_delete_item"/>
 
     <item
-        android:id="@+id/action_delete_all_data"
+        android:id="@+id/action_delete_all_products"
         android:title="@string/menu_delete_all_data"/>
 
 </menu>

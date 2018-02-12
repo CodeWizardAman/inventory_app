@@ -1,9 +1,5 @@
 package com.example.android.inventoryproductsapp;
 
-/**
- * Created by UFO_24 on 12-02-2018.
- */
-
 public class InventoryProduct {
 
     private String productName;

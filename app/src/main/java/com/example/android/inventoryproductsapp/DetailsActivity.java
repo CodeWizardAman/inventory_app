@@ -24,9 +24,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-/**
- * Created by UFO_24 on 12-02-2018.
- */
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -181,9 +178,9 @@ public class DetailsActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         if (currentItemId == 0) {
-            MenuItem deleteProductMenuItem = menu.findItem(R.id.action_delete_item);
-            MenuItem deleteAllProductMenuItem = menu.findItem(R.id.action_delete_all_data);
-            MenuItem orderMenuItem = menu.findItem(R.id.action_order);
+            MenuItem deleteProductMenuItem = menu.findItem(R.id.action_delete_product);
+            MenuItem deleteAllProductMenuItem = menu.findItem(R.id.action_delete_all_products);
+            MenuItem orderMenuItem = menu.findItem(R.id.action_order_products);
             deleteProductMenuItem.setVisible(false);
             deleteAllProductMenuItem.setVisible(false);
             orderMenuItem.setVisible(false);
@@ -218,15 +215,15 @@ public class DetailsActivity extends AppCompatActivity {
                 // Show a dialog that notifies the user they have unsaved changes
                 showUnsavedChangesDialog(discardButtonClickListener);
                 return true;
-            case R.id.action_order:
+            case R.id.action_order_products:
                 // dialog with phone and email
-                showOrderConfirmationDialog();
+                showConfirmOderDialog();
                 return true;
-            case R.id.action_delete_item:
+            case R.id.action_delete_product:
                 // delete one item
                 showDeleteConfirmationDialog(currentItemId);
                 return true;
-            case R.id.action_delete_all_data:
+            case R.id.action_delete_all_products:
                 //delete all data
                 showDeleteConfirmationDialog(0);
                 return true;
@@ -235,30 +232,30 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private boolean addItemToDb() {
-        boolean isAllOk = true;
-        if (!checkIfValueSet(nameEditText, "name")) {
-            isAllOk = false;
+        boolean isValid = true;
+        if (!checkForEmptiness(nameEditText, "name")) {
+            isValid = false;
         }
-        if (!checkIfValueSet(priceEditText, "price")) {
-            isAllOk = false;
+        if (!checkForEmptiness(priceEditText, "price")) {
+            isValid = false;
         }
-        if (!checkIfValueSet(quantityEditText, "quantity")) {
-            isAllOk = false;
+        if (!checkForEmptiness(quantityEditText, "quantity")) {
+            isValid = false;
         }
-        if (!checkIfValueSet(supplierNameEditText, "supplier name")) {
-            isAllOk = false;
+        if (!checkForEmptiness(supplierNameEditText, "supplier name")) {
+            isValid = false;
         }
-        if (!checkIfValueSet(supplierPhoneEditText, "supplier phone")) {
-            isAllOk = false;
+        if (!checkForEmptiness(supplierPhoneEditText, "supplier phone")) {
+            isValid = false;
         }
-        if (!checkIfValueSet(supplierEmailEditText, "supplier email")) {
-            isAllOk = false;
+        if (!checkForEmptiness(supplierEmailEditText, "supplier email")) {
+            isValid = false;
         }
         if (actualUri == null && currentItemId == 0) {
-            isAllOk = false;
+            isValid = false;
             imageBtn.setError("Missing image");
         }
-        if (!isAllOk) {
+        if (!isValid) {
             return false;
         }
 
@@ -279,7 +276,7 @@ public class DetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean checkIfValueSet(EditText text, String description) {
+    private boolean checkForEmptiness(EditText text, String description) {
         if (TextUtils.isEmpty(text.getText())) {
             text.setError("Missing product " + description);
             return false;
@@ -292,6 +289,7 @@ public class DetailsActivity extends AppCompatActivity {
     private void addValuesToEditItem(long itemId) {
         Cursor cursor = dbHelper.readProduct(itemId);
         cursor.moveToFirst();
+      
         nameEditText.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_NAME)));
         priceEditText.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_PRICE)));
         quantityEditText.setText(cursor.getString(cursor.getColumnIndex(InventoryProductContract.InventoryEntry.COLUMN_QUANTITY)));
@@ -307,7 +305,7 @@ public class DetailsActivity extends AppCompatActivity {
         imageBtn.setEnabled(false);
     }
 
-    private void showOrderConfirmationDialog() {
+    private void showConfirmOderDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.order_message);
         builder.setPositiveButton(R.string.phone, new DialogInterface.OnClickListener() {
@@ -324,10 +322,10 @@ public class DetailsActivity extends AppCompatActivity {
                 Intent intent = new Intent(android.content.Intent.ACTION_SENDTO);
                 intent.setType("text/plain");
                 intent.setData(Uri.parse("mailto:" + supplierEmailEditText.getText().toString().trim()));
-                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Recurrent new order");
-                String bodyMessage = "Please send us following product: Product Name - " +
-                        nameEditText.getText().toString().trim() +
-                        " And Product Quantiy - "+ quantityEditText.getText().toString().trim();
+                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "New order");
+                String bodyMessage = "Please send us following product:\nProduct Name - " +
+                        nameEditText.getText().toString().trim()+
+                        "\nProduct Quantiy - "+ quantityEditText.getText().toString().trim();
                 intent.putExtra(android.content.Intent.EXTRA_TEXT, bodyMessage);
                 startActivity(intent);
             }
@@ -336,12 +334,12 @@ public class DetailsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private int deleteAllProductsFromTable() {
+    private int deleteAllProducts() {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         return database.delete(InventoryProductContract.InventoryEntry.TABLE_NAME, null, null);
     }
 
-    private int deleteProductFromTable(long itemId) {
+    private int deleteProduct(long itemId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         String selection = InventoryProductContract.InventoryEntry._ID + "=?";
         String[] selectionArgs = {String.valueOf(itemId)};
@@ -356,9 +354,9 @@ public class DetailsActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if (itemId == 0) {
-                    deleteAllProductsFromTable();
+                    deleteAllProducts();
                 } else {
-                    deleteProductFromTable(itemId);
+                    deleteProduct(itemId);
                 }
                 finish();
             }
@@ -415,9 +413,6 @@ public class DetailsActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        // The ACTION_OPEN_DOCUMENT intent was sent with the request code READ_REQUEST_CODE.
-        // If the request code seen here doesn't match, it's the response to some other intent,
-        // and the below code shouldn't run at all.
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             // The document selected by the user won't be returned in the intent.

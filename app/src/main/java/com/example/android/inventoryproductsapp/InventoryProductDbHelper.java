@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by UFO_24 on 12-02-2018.
- */
 
 
 public class InventoryProductDbHelper extends SQLiteOpenHelper {

@@ -10,9 +10,6 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Created by UFO_24 on 12-02-2018.
- */
 
 public class InventoryCursorAdapter extends CursorAdapter {
 

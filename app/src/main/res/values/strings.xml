@@ -15,14 +15,14 @@
     <string name="action_save">Save product</string>
     <string name="editor_activity_title_new_item">Add new product</string>
     <string name="editor_activity_title_edit_item">Edit product</string>
-    <string name="menu_order_item">Order more</string>
+    <string name="menu_order_item">Order Products</string>
     <string name="menu_delete_item">Delete product</string>
     <string name="menu_delete_all_data">Delete all products</string>
     <string name="phone">Phone</string>
     <string name="email">E-mail</string>
     <string name="order_message">Order this item by phone or e-mail</string>
     <string name="delete_message">Are you sure want to delete?</string>
-    <string name="delete">Accept</string>
+    <string name="delete">Ok</string>
     <string name="cancel">Cancel</string>
     <string name="text_hint">Add items to inventory</string>
     <string name="action_add_dummy_data">Add Dummy Data</string>
